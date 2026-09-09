@@ -1,0 +1,53 @@
+# Windows packaging for the DeepSeek Harness desktop shell.
+# The sidecar executable is produced by pnpm run build:exe (reusing the
+# single-file build shared with the Python SDK) and copied into assets/ by
+# scripts/copy-desktop-sidecar.mjs before this config runs.
+appId: com.deepseek.harness.desktop
+productName: DeepSeek Harness
+# Local installer build: do not publish. This also skips the block-map step
+# that would otherwise require a GitHub token (GH_TOKEN) at the end of the NSIS
+# build, because the package.json repository field implies a GitHub publisher.
+publish: null
+# Use a standalone Electron distribution outside node_modules so that a later
+# `pnpm install` (which re-copies the electron npm package and drops the binary
+# because its postinstall re-download is unreliable) cannot wipe it. Rebuild with
+# scripts/rebuild-electron-dist.mjs after changing the Electron version.
+electronDist: F:/DeepSeek_Harness/electron-dist
+
+directories:
+  output: ../../dist-packages
+  buildResources: assets
+
+files:
+  - dist/**
+  - package.json
+
+# The backend runs as a separate Node process, so it is an extra resource next
+# to the asar, not part of it. The ripgrep sidecar must sit beside the exe.
+extraResources:
+  - from: assets/dsh-web-server.exe
+    to: dsh-web-server/dsh-web-server.exe
+  - from: assets/dsh-web-server-rg.exe
+    to: dsh-web-server/dsh-web-server-rg.exe
+  # The tray looks for tray.png at process.resourcesPath (tray.ts), so it must
+  # land at the resources root, not inside the asar.
+  - from: assets/tray.png
+    to: tray.png
+
+asar: true
+
+win:
+  # winCodeSign 归档内含 macOS 的 .dylib 符号链接，解压需要
+  # SeCreateSymbolicLinkPrivilege（管理员或开发者模式）。置 false 跳过会下载
+  # winCodeSign 的 rcedit 步骤：代价是 exe 不带版本信息、无 asar 完整性校验
+  # （图标本就是默认 Electron 图标）。需要时可开开发者模式再改回 true。
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
