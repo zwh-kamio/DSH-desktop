@@ -50,7 +50,7 @@ function finalMessage(seq: number, time: number, turn: number, step: number, usa
 }
 
 function turnEnd(seq: number, time: number, turn: number): SessionEvent {
-  return { type: 'turn/end', seq, time, data: { turn, reason: 'stop' } }
+  return { type: 'turn/end', seq, time, data: { turn, reason: { kind: 'completed' } } }
 }
 
 /** One provider usage report with only the fields a case cares about. */

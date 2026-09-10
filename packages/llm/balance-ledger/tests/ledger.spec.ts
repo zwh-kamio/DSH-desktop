@@ -116,18 +116,13 @@ describe('recording a reading', () => {
 })
 
 describe('opening the domain', () => {
-  it('opens the deepseek_balance domain with a per-currency table', async () => {
-    const spec = { name: 'deepseek_balance', tables: { currencies: {} } }
+  it('declares and opens the domain the composition stores it by', async () => {
+    const { balanceLedgerDomainSpec } = await import('../src/spec.ts')
     const ctx = new Context()
     await ctx.plugin(MemoryStorage)
     await ctx.plugin(ScriptedReader, 'ok')
-    const opened = await ctx.storageDomain.open(spec)
+    const opened = await ctx.storageDomain.open(balanceLedgerDomainSpec)
     expect((opened as { name: string }).name).toBe('deepseek_balance')
-  })
-
-  it('declares the domain under the name the composition stores it by', async () => {
-    const { balanceLedgerDomainSpec } = await import('../src/spec.ts')
-    expect(balanceLedgerDomainSpec.name).toBe('deepseek_balance')
     expect(Object.keys(balanceLedgerDomainSpec.tables)).toEqual(['currencies'])
   })
 })

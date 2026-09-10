@@ -12,8 +12,15 @@ function buckets(uncachedInputTokens: number, outputTokens: number): UsageBucket
   return { uncachedInputTokens, outputTokens, cacheReadTokens: 0, cacheWriteTokens: 0 }
 }
 
+/** One route as the stored record carries it. */
+interface StoredRoute {
+  provider: string
+  model: string
+  buckets: UsageBuckets
+}
+
 /** One stored hour cell: totals plus the routes that ran within it. */
-function hour(uncached: number, output: number, routes: readonly { provider: string; model: string; buckets: UsageBuckets }[]) {
+function hour(uncached: number, output: number, routes: StoredRoute[]) {
   return { total: buckets(uncached, output), routes }
 }
 
