@@ -1,0 +1,101 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grid {
+  stroke: var(--dsw-alias-border-l2);
+  stroke-width: 1;
+}
+
+.axisText {
+  fill: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+
+.empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.legendButton:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.legendLabel {
+  color: var(--dsw-alias-label-primary);
+}
+
+.legendValue {
+  color: var(--dsw-alias-label-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+/* A hidden series keeps its place in the legend but reads as switched off. */
+.swatchHidden {
+  opacity: 0.3;
+}
+
+/* One class per palette slot, each naming the theme token rather than a colour. */
+.stroke0 { stroke: var(--dsw-chart-series-1); stroke-width: 2; }
+.stroke1 { stroke: var(--dsw-chart-series-2); stroke-width: 2; }
+.stroke2 { stroke: var(--dsw-chart-series-3); stroke-width: 2; }
+.stroke3 { stroke: var(--dsw-chart-series-4); stroke-width: 2; }
+.stroke4 { stroke: var(--dsw-chart-series-5); stroke-width: 2; }
+.stroke5 { stroke: var(--dsw-chart-series-6); stroke-width: 2; }
+.stroke6 { stroke: var(--dsw-chart-series-7); stroke-width: 2; }
+.stroke7 { stroke: var(--dsw-chart-series-8); stroke-width: 2; }
+.strokeOther { stroke: var(--dsw-chart-series-other); stroke-width: 2; }
+
+.swatch0 { background: var(--dsw-chart-series-1); }
+.swatch1 { background: var(--dsw-chart-series-2); }
+.swatch2 { background: var(--dsw-chart-series-3); }
+.swatch3 { background: var(--dsw-chart-series-4); }
+.swatch4 { background: var(--dsw-chart-series-5); }
+.swatch5 { background: var(--dsw-chart-series-6); }
+.swatch6 { background: var(--dsw-chart-series-7); }
+.swatch7 { background: var(--dsw-chart-series-8); }
+.swatchOther { background: var(--dsw-chart-series-other); }

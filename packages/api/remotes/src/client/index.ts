@@ -12,6 +12,7 @@ import messageFeedbackRemote from '@deepseek-ai/dsh-message-feedback/remote'
 import sessionReferencesRemote from '@deepseek-ai/dsh-session-reference/remote'
 import subagentsRemote from '@deepseek-ai/dsh-subagent/remote'
 import sessionRemote from '@deepseek-ai/dsh-api-session-controller/remote'
+import usageRemote from '@deepseek-ai/dsh-api-usage-controller/remote'
 import workspaceRemote from '@deepseek-ai/dsh-api-workspace-controller/remote'
 import type { ClientRemote } from '@deepseek-ai/dsh-api-gateway/client'
 
@@ -28,6 +29,7 @@ export type {} from '@deepseek-ai/dsh-session-reference/remote'
 export type {} from '@deepseek-ai/dsh-subagent/remote'
 export type * from '@deepseek-ai/dsh-subagent/client'
 export type {} from '@deepseek-ai/dsh-api-session-controller/remote'
+export type {} from '@deepseek-ai/dsh-api-usage-controller/remote'
 export type * from '@deepseek-ai/dsh-api-session-controller/types'
 export type {} from '@deepseek-ai/dsh-api-workspace-controller/remote'
 export type * from '@deepseek-ai/dsh-api-workspace-controller/types'
@@ -146,7 +148,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
     for (const contribution of [
       agentPresetsRemote, commandsRemote, settingsControllerRemote, goalsRemote, llmRemote, dynamicRemote,
       pluginInventoryRemote, messageFeedbackRemote, sessionReferencesRemote,
-      subagentsRemote, sessionRemote, workspaceRemote,
+      subagentsRemote, sessionRemote, workspaceRemote, usageRemote,
     ]) {
       disposers.push(await ctx.remote.$mount(contribution))
     }

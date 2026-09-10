@@ -91,6 +91,31 @@
     - id: settings-controller
       name: '@deepseek-ai/dsh-api-settings-controller'
 
+    # Cross-session token-usage ledger behind the settings Usage page. Its own
+    # storage domain, not a projection: the session-list Remote ships every
+    # projection's wire value, and a per-hour, per-route payload would inflate
+    # that hot path. Config defaults keep 400 days of hour buckets per session
+    # and write behind turn boundaries.
+    - id: usage-ledger
+      name: '@deepseek-ai/dsh-usage-ledger'
+
+    # The `usage` Remote namespace over that ledger. Registered regardless of
+    # the ledger's presence so a client always resolves the namespace and gets
+    # an actionable diagnostic instead of an unknown method.
+    - id: usage-controller
+      name: '@deepseek-ai/dsh-api-usage-controller'
+
+    # The account-balance reader the Usage page's balance card reads. Dormant
+    # until asked: it holds no cache and performs one request per read.
+    - id: deepseek-balance
+      name: '@deepseek-ai/dsh-deepseek-balance'
+
+    # Keeps every balance reading, on a 30-minute interval and on each read the
+    # Usage page performs. The provider publishes no spend figure, so readings
+    # in order are the only way to recover one.
+    - id: balance-ledger
+      name: '@deepseek-ai/dsh-balance-ledger'
+
     # Workspace commands and reconnect-safe projection over Typert Remote.
     - id: workspace-controller
       name: '@deepseek-ai/dsh-api-workspace-controller'
@@ -195,6 +220,11 @@
 
     - id: ui-settings-models
       name: '@deepseek-ai/dsh-client-ui-settings-models'
+
+    # The Usage page over the usage Remote. Dormant until opened: the section
+    # mounts idly and reads its first summary on the render that asks for one.
+    - id: ui-settings-usage
+      name: '@deepseek-ai/dsh-client-ui-settings-usage'
 
     - id: ui-settings-plugin-inventory
       name: '@deepseek-ai/dsh-client-ui-settings-plugin-inventory'

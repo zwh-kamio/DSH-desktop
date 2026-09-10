@@ -36,6 +36,10 @@ const NO_MODEL_EXPERIENCE_SECTION: Readonly<Record<string, string>> = {
   'packages/util/launch-environment': 'The package only resolves host environment values; model-facing consumers own any rendered use.',
   'packages/util/workspace-path': 'The package only formats Workspace paths for browser UI; it never constructs model input.',
   'packages/util/values': 'The package only validates, snapshots, compares, freezes, or rejects caller-owned values; consumers own every model-facing use.',
+  'packages/llm/usage-ledger': 'The package folds committed session events into a derived ledger and answers host reads; it registers no prompt, schema, tool, or message.',
+  'packages/llm/deepseek-balance': 'The package performs one account-level HTTP read of the provider balance; its result never enters a session or a request.',
+  'packages/llm/balance-ledger': 'The package stores account-balance readings and answers host reads; neither readings nor their differences reach a model request.',
+  'packages/api/usage-controller': 'The package exposes host usage and balance facts over Typert Remote to the settings page; it registers no model-facing surface.',
 }
 
 /**
@@ -55,6 +59,7 @@ const SENTENCE_MODEL_EXPERIENCE: Readonly<Record<string, SentenceContract>> = {
   'packages/code-runtime/code-runtime-worker-thread': { kind: 'indirect', reason: 'The worker backend delegates model rendering to PTC mode in dsh-tools.' },
   'packages/code-runtime/code-runtime-python': { kind: 'indirect', reason: 'The CPython subprocess backend delegates model rendering to PTC mode in dsh-tools.' },
   'packages/client/ui-agent-preset': { kind: 'indirect', reason: 'Browser-side settings row; the preset it selects owns every model-facing effect.' },
+  'packages/client/ui-settings-usage': { kind: 'none', reason: 'Browser-side read-only presentation of host usage and balance facts; registers nothing model-facing.' },
   'packages/util/crypto': { kind: 'indirect', reason: 'Pure identifier minting; the ids consumers mint with it never enter prompts as semantic content.' },
   'packages/util/deque': { kind: 'none', reason: 'In-process collection primitive; registers nothing model-facing.' },
   'packages/util/time': { kind: 'indirect', reason: 'Pure zone validation; the consumer that records a canonical zone owns the model-visible line derived from it.' },

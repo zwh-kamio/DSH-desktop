@@ -39,6 +39,9 @@
   flex: none;
   padding: 12px 28px 0 20px;
   border-bottom: 1px solid transparent;
+  /* Frameless desktop window: the session header doubles as the native drag
+     handle; interactive children opt out below. Browser runs ignore it. */
+  -webkit-app-region: drag;
 }
 
 .header::after {
@@ -449,4 +452,17 @@
    mounted but invisible so no wrong layout flashes before the phase lands. */
 .root[data-phase='settling'] .composerSeat {
   visibility: hidden;
+}
+
+/* Desktop frameless window: interactive header children stay clickable while
+   the surrounding chrome is the native drag handle (Electron-only). */
+.header button,
+.header a,
+.header input,
+.header textarea,
+.header select,
+.header [role='button'],
+.header [role='tab'],
+.header [contenteditable='true'] {
+  -webkit-app-region: no-drag;
 }

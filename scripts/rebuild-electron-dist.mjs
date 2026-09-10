@@ -11,7 +11,7 @@
 
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -62,3 +62,18 @@ if (!existsSync(exe)) {
   process.exit(1);
 }
 console.log('electron ' + version + ' ready at ' + dest);
+
+// The dev launcher (`electron .`) resolves its binary from the electron npm
+// package, whose own postinstall is unreliable and whose dist `pnpm install`
+// wipes. Repopulate that copy from the same cache zip so `pnpm desktop:dev`
+// keeps working after an install.
+const npmPkgDir = dirname(electronPkgJson);
+const npmDist = join(npmPkgDir, 'dist');
+console.log('extracting ' + zip + ' -> ' + npmDist);
+if (existsSync(npmDist)) rmSync(npmDist, { recursive: true, force: true });
+mkdirSync(npmDist, { recursive: true });
+execFileSync('powershell', ['-NoProfile', '-Command', "Expand-Archive -Path '" + zip + "' -DestinationPath '" + npmDist + "' -Force"], {
+  stdio: 'inherit', shell: true,
+});
+writeFileSync(join(npmPkgDir, 'path.txt'), 'electron.exe');
+console.log('dev launcher binary ready at ' + npmDist);
