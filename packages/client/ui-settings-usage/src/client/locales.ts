@@ -54,7 +54,7 @@ export const en = {
 
 /** Chinese strings, keyed by the English source of truth. */
 export const zh: Record<keyof typeof en, string> = {
-  nav: '用量',
+  nav: '用量信息',
   title: '用量信息',
   intro: '这是本机 Harness 记录的 token 用量合计，涵盖它保留的全部会话。尚未归档的会话单独列出，不计入合计。',
   range: '范围',

@@ -923,3 +923,13 @@ export const IconArchiveOutline20 = ({ size = 20, className }: IconProps) => (
     <path d="M12.7962 12.5661V11.0832H7.20548V12.5661L12.7962 12.5661Z" fill="currentColor" />
   </svg>
 )
+
+/** ic_ds_usage_info_outline_16 — usage trend plus baseline, kept on its 1024 source grid. */
+export const IconUsageOutline16 = ({ size = 16, className }: IconProps) => (
+  <svg width={size} height={size} className={className} viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M422.4 550.4l-21.333333-21.333333-89.6 89.6-29.866667-29.866667L396.8 469.333333l51.2 51.2L631.466667 341.333333l179.2 179.2-29.866667 29.866667-149.333333-149.333333-183.466667 183.466666-25.6-34.133333zM213.333333 810.666667h597.333334v42.666666H170.666667V213.333333h42.666666v597.333334z"
+      fill="currentColor"
+    />
+  </svg>
+)
