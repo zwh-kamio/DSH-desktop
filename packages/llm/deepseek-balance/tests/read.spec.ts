@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Context, Service } from '@deepseek-ai/cordis'
 import type { ResolvedCredential } from '@deepseek-ai/dsh-credentials'
+import { createLaunchEnvironmentSnapshot, DSH_LAUNCH_ENVIRONMENT_KEY } from '@deepseek-ai/dsh-launch-environment'
 import DeepSeekBalance, { BalanceError } from '../src/index.ts'
 import type { Config } from '../src/index.ts'
 
@@ -24,10 +25,20 @@ function answer(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 }
 
-/** Boot the reader over a scripted transport. */
+/**
+ * Boot the reader over a scripted transport.
+ *
+ * The launch environment is PROVIDED rather than inherited. With no slot the
+ * reader falls back to the real process environment, so a developer who has
+ * DEEPSEEK_API_KEY or DEEPSEEK_BASE_URL exported would silently observe
+ * different behaviour from CI — the suite's subject is the reader, not the
+ * machine it happens to run on.
+ */
 async function boot(options: {
   response?: Response | (() => Promise<Response>)
   credential?: string | undefined
+  /** Variables the launch environment supplies; empty by default. */
+  ambient?: Record<string, string>
   config?: Partial<Config>
 } = {}) {
   const calls: { url: string; init: RequestInit }[] = []
@@ -45,6 +56,10 @@ async function boot(options: {
   vi.stubGlobal('fetch', fetchMock)
 
   const ctx = new Context()
+  ctx.provide(
+    DSH_LAUNCH_ENVIRONMENT_KEY,
+    createLaunchEnvironmentSnapshot([{ source: 'process', values: options.ambient ?? {} }]),
+  )
   const key = 'credential' in options ? options.credential : 'sk-live'
   if (key !== undefined) await ctx.plugin(StubCredentials, key)
   await ctx.plugin(DeepSeekBalance, {
@@ -102,6 +117,16 @@ describe('reading the account balance', () => {
     expect(failure).toBeInstanceOf(BalanceError)
     expect((failure as BalanceError).code).toBe('MISSING_CREDENTIAL')
     expect(calls).toHaveLength(0)
+  })
+
+  it('falls back to the launch environment when no provider is mounted', async () => {
+    const { object, calls } = await boot({
+      credential: undefined,
+      ambient: { DEEPSEEK_API_KEY: 'sk-ambient' },
+    })
+    await object.read()
+    const headers = calls[0]?.init.headers as Record<string, string>
+    expect(headers.authorization).toBe('Bearer sk-ambient')
   })
 
   it('refuses a credential reference that is not a variable name', async () => {
